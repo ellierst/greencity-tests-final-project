@@ -1,8 +1,3 @@
-"""
-Test Case TC_03: Events no results message
-Verifies that "no results" message is displayed when filtering by date range with no matching events
-"""
-
 from src.pages.events_page import EventsPage
 
 

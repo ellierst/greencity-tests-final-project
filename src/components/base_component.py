@@ -3,13 +3,15 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class BaseComponent:
-    def __init__(self, driver, locator, wait_time=10):
+    def __init__(self, driver, locator=None, wait_time=10):
         self.driver = driver
         self.locator = locator
         self.wait = WebDriverWait(driver, wait_time)
 
     @property
     def element(self):
+        if self.locator is None:
+            raise ValueError("Locator not set for this component")
         return self.wait.until(EC.presence_of_element_located(self.locator))
 
     def is_displayed(self):
@@ -38,7 +40,9 @@ class BaseComponent:
         return self.element.get_attribute(attribute)
 
     def send_keys(self, text):
-        self.element.send_keys(text)
+        element = self.wait.until(EC.visibility_of_element_located(self.locator))
+        element.send_keys(text)
 
     def clear(self):
-        self.element.clear()
+        element = self.wait.until(EC.visibility_of_element_located(self.locator))
+        element.clear()

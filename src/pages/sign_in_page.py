@@ -14,16 +14,16 @@ class SignInPage(BasePage):
             self.click_sign_in()
         except Exception as e:
             raise AssertionError(f"Failed to click sign in button: {str(e)}")
-        
-        email_input = self.wait.until(EC.visibility_of_element_located(self.email_input_locator))
+
+        email_input = self.find_element(self.email_input_locator, EC.visibility_of_element_located)
         email_input.send_keys(email)
-        
-        password_input = self.wait.until(EC.visibility_of_element_located(self.password_input_locator))
+
+        password_input = self.find_element(self.password_input_locator, EC.visibility_of_element_located)
         password_input.send_keys(password)
-        
-        submit_button = self.wait.until(EC.element_to_be_clickable(self.submit_button_locator))
+
+        submit_button = self.find_element(self.submit_button_locator, EC.element_to_be_clickable)
         assert submit_button.is_displayed(), "Sign in button is not displayed"
         submit_button.click()
-        
+
         # Wait for login to complete
-        self.wait.until(EC.visibility_of_element_located(self.user_header_locator))
+        self.find_element(self.user_header_locator, EC.visibility_of_element_located)

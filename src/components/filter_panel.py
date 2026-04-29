@@ -1,5 +1,6 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
 from src.components.base_component import BaseComponent
 
 
@@ -8,16 +9,15 @@ class FilterPanel(BaseComponent):
     social_option_locator = (By.XPATH, "//*[@id='mat-option-11']/span")
     date_dropdown_arrow_locator = (By.XPATH, "//div[@class='mat-mdc-select-arrow']")
     close_filter_button_locator = (By.XPATH, "//div[@class='cross-container']")
-    
+
     change_year_button_locator = (By.XPATH, "//span[@class='mdc-button__label']")
     year_2020_option_locator = (By.XPATH, "//span[contains(text(), '2020')]")
     month_oct_option_locator = (By.XPATH, "//span[contains(text(), 'ЖОВТ.')]")
     start_day_23_locator = (By.XPATH, "//button//span[contains(text(), '23')]")
     end_day_29_locator = (By.XPATH, "//span[contains(text(), '29')]")
 
-    def __init__(self, driver):
-        self.driver = driver
-        self.wait = super().__init__(driver, self.type_dropdown_locator).wait
+    def __init__(self, driver, wait_time=10):
+        super().__init__(driver, self.type_dropdown_locator, wait_time)
 
     def open_type_dropdown(self):
         dropdown = self.wait.until(EC.element_to_be_clickable(self.type_dropdown_locator))

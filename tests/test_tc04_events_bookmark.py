@@ -1,5 +1,4 @@
 import pytest
-from selenium.webdriver.common.by import By
 from src.pages.events_page import EventsPage
 from src.pages.sign_in_page import SignInPage
 
@@ -9,8 +8,6 @@ def test_events_bookmark_add_and_remove(driver, test_email, test_password):
         pytest.skip("Test credentials not configured in environment variables (TEST_EMAIL, TEST_PASSWORD)")
 
     driver.get("https://www.greencity.cx.ua/#/greenCity")
-    
-    driver.implicitly_wait(5)
 
     try:
         sign_in_page = SignInPage(driver)
@@ -24,15 +21,19 @@ def test_events_bookmark_add_and_remove(driver, test_email, test_password):
     events_page = EventsPage(driver)
     events_page.open()
 
+    # Get first event with flag and bookmark it
     flag = events_page.get_first_favorites_flag()
-    _, event_title = events_page.get_event_with_flag()
+    event_card, event_title = events_page.get_event_with_flag()
     print(f"Saving event: {event_title}")
 
     flag.click()
     assert "flag-active" in flag.get_attribute("class"), \
         "Favorites flag should become active after click"
-    print(f"Event marked as favorite {flag.get_attribute('class')}")
+    print(f"Event marked as favorite: {flag.get_attribute('class')}")
+
+    # Refresh and verify bookmark persists
     driver.refresh()
+    print("Page refreshed to verify bookmark persistence")
 
     events_page.open_bookmarks()
     saved_titles = events_page.get_saved_event_titles()
@@ -40,17 +41,15 @@ def test_events_bookmark_add_and_remove(driver, test_email, test_password):
         f"Event '{event_title}' should be found in saved events. Found: {saved_titles}"
     print(f"Event found in bookmarks")
 
+    # Remove bookmark using EventCard component
     events_page.open()
-    event_card = events_page.get_event_card_by_title(event_title)
-    active_flag = event_card.find_element(By.CSS_SELECTOR, ".flag-active")
-    assert active_flag.is_displayed(), "Active flag should be displayed on the event card"
-    active_flag.click()
-    
-    events_page.wait.until(lambda d: "flag-active" not in active_flag.get_attribute("class"))
-    assert "flag-active" not in active_flag.get_attribute("class"), \
-        "Favorites flag should become inactive after click"
+    event_card_obj = events_page.get_event_card_by_title(event_title)
+
+    became_inactive = event_card_obj.toggle_favorite_and_wait()
+    assert became_inactive, "Flag should become inactive after click"
     print("Event removed from favorites")
 
+    # Verify event is removed from bookmarks
     events_page.open_bookmarks()
     saved_titles_after = events_page.get_saved_event_titles()
     assert event_title not in saved_titles_after, \
