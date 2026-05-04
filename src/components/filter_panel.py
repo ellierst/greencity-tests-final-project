@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from src.components.base_component import BaseComponent
+import allure
 
 
 class FilterPanel(BaseComponent):
@@ -19,22 +20,26 @@ class FilterPanel(BaseComponent):
     def __init__(self, driver, wait_time=10):
         super().__init__(driver, self.type_dropdown_locator, wait_time)
 
+    @allure.step("Open Type dropdown in filter panel")
     def open_type_dropdown(self):
         dropdown = self.wait.until(EC.element_to_be_clickable(self.type_dropdown_locator))
         assert dropdown.is_displayed(), "Type dropdown is not displayed"
         dropdown.click()
         return dropdown
 
+    @allure.step("Select Social type in filter panel")
     def select_social_type(self):
         option = self.wait.until(EC.element_to_be_clickable(self.social_option_locator))
         assert option.is_displayed(), "Social option is not displayed"
         option.click()
 
+    @allure.step("Open Date dropdown in filter panel")
     def open_date_dropdown(self):
         btn = self.wait.until(EC.element_to_be_clickable(self.date_dropdown_arrow_locator))
         assert btn.is_displayed(), "Date dropdown button is not displayed"
         btn.click()
 
+    @allure.step("Select date range for October 2020 in filter panel")
     def select_date_range_oct_2020(self):
         year_btn = self.wait.until(EC.element_to_be_clickable(self.change_year_button_locator))
         assert year_btn.is_displayed(), "Change year button is not displayed"
@@ -56,6 +61,7 @@ class FilterPanel(BaseComponent):
         assert end_day.is_displayed(), "End day 29 is not displayed"
         end_day.click()
 
+    @allure.step("Close filter panel")
     def close_filter(self):
         close_btn = self.wait.until(EC.element_to_be_clickable(self.close_filter_button_locator))
         assert close_btn.is_displayed(), "Close button is not displayed"

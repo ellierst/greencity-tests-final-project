@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from src.components.base_component import BaseComponent
+import allure
 
 
 class Header(BaseComponent):
@@ -11,6 +12,7 @@ class Header(BaseComponent):
     def __init__(self, driver, wait_time=30):
         super().__init__(driver, self.sign_in_button_locator, wait_time)
 
+    @allure.step("Click sign in button to open login form")
     def click_sign_in(self):
         try:
             btn = self.wait.until(EC.element_to_be_clickable(self.sign_in_button_locator))

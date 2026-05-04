@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from src.pages.base_page import BasePage
+import allure
 
 
 class SignInPage(BasePage):
@@ -9,6 +10,7 @@ class SignInPage(BasePage):
     submit_button_locator = (By.XPATH, "//button[@class='greenStyle']")
     user_header_locator = (By.ID, "header_user-wrp")
 
+    @allure.step("Click sign in button to open login form")
     def login(self, email, password):
         try:
             self.click_sign_in()
@@ -25,5 +27,10 @@ class SignInPage(BasePage):
         assert submit_button.is_displayed(), "Sign in button is not displayed"
         submit_button.click()
 
-        # Wait for login to complete
-        self.find_element(self.user_header_locator, EC.visibility_of_element_located)
+    @allure.step("Check if user is logged in by verifying presence of user header")
+    def is_logged_in(self):
+        try:
+            self.find_element(self.user_header_locator, EC.visibility_of_element_located)
+            return True
+        except Exception:
+            return False

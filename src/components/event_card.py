@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from src.components.base_component import BaseComponent
+import allure
 
 
 class EventCard(BaseComponent):
@@ -18,21 +19,25 @@ class EventCard(BaseComponent):
         self.wait = WebDriverWait(driver, 10)
 
     @property
+    @allure.step("Get event card element")
     def element(self):
         return self._element
 
+    @allure.step("Get favorite flag element in event card")
     def get_favorite_flag(self):
         try:
             return self.find_element(*self.favorite_flag_locator)
         except Exception:
             return None
 
+    @allure.step("Get active favorite flag element in event card")
     def get_active_favorite_flag(self):
         try:
             return self.find_element(*self.favorite_flag_active_locator)
         except Exception:
             return None
 
+    @allure.step("Check if event card is marked as favorite")
     def is_favorite(self):
         try:
             flag = self.get_active_favorite_flag()
@@ -40,10 +45,12 @@ class EventCard(BaseComponent):
         except Exception:
             return False
 
+    @allure.step("Get event title from event card")
     def get_title(self):
         title_element = self.find_element(*self.event_title_locator)
         return title_element.text
 
+    @allure.step("Check if event card has list view class")
     def has_list_view_class(self):
         try:
             card_wrapper = self.find_element(*self.card_wrapper_locator)
@@ -52,6 +59,7 @@ class EventCard(BaseComponent):
         except Exception:
             return False
 
+    @allure.step("Click favorite flag in event card to toggle favorite state")
     def click_favorite_flag(self):
         flag = self.get_favorite_flag()
         if flag:
@@ -59,6 +67,7 @@ class EventCard(BaseComponent):
         else:
             raise ValueError("Favorite flag not found in event card")
 
+    @allure.step("Toggle favorite state of event card and wait for state change")
     def toggle_favorite_and_wait(self):
         flag = self.get_active_favorite_flag()
         print(f"Current favorite flag state: {'active' if self.is_favorite() else 'inactive'}")
@@ -75,20 +84,24 @@ class EventCard(BaseComponent):
         else:
             return not self.is_favorite()
 
+    @allure.step("Check if event card has any of the specified tags")
     def get_all_tags(self):
         try:
             return self.find_elements(*self.tags_locator)
         except Exception:
             return []
 
+    @allure.step("Get all tags from event card")
     def get_tags(self):
         tags_elements = self.get_all_tags()
         return [tag.text.strip() for tag in tags_elements]
 
+    @allure.step("Check if event card has specific tag: {tag_name}")
     def has_tag(self, tag_name):
         tags = self.get_tags()
         return tag_name in tags
 
+    @allure.step("Check if event card has any of the specified tags: {tag_names}")
     def has_any_tag(self, tag_names):
         tags = self.get_tags()
         return any(tag in tag_names for tag in tags)
